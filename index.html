@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+  <head>
+
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+
+    <title>Joint Count</title>
+
+    <!--[if lte IE 8]><script type="text/javascript" src="vendor/js/excanvas.js"></script><![endif]-->
+    <script type="text/javascript" src="vendor/js/json2.js"></script>
+    <audio id="ouch" hidden="hidden" src="resources/audio/ouch.mp3" type="audio/mpeg"></audio>
+    <audio id="getoff" hidden="hidden" src="resources/audio/getoff.mp3" type="audio/mpeg"></audio>
+
+  </head>
+  
+  <body onload="assessments = initialize();">
+    
+    <h1>Joint Count</h1>
+  
+    <canvas id="canvas1" class="jc sjc"></canvas>
+    <canvas id="canvas2" class="jc tjc"></canvas>
+    <button onclick="alert(JSON.stringify(
+      assessments.map(
+        function(obj) {
+          return obj.assessment
+        }
+      )
+    ));">Export</button>
+    <script src="resources/js/arthritis-joint-assessment.js"></script>
+
+  </body>
+</html>
