@@ -6,12 +6,12 @@
  * @param {object} colors - The colors for the joints. border, selected and unselected colors required.
  * @param {number} scale - Scale of the canvas in relation to the original image.
  */
-function ArthritisJointAssessmentCanvas(canvas, type, colors, scale) {
+function ArthritisJointAssessmentCanvas(canvas, type, colors, scale, selected) {
 	this.canvas = canvas;
 	this.colors = colors;
 	this.scale  = scale; //canvas.width / 744;
-	this.playSound = false;
-	this.assessment = new ArthritisJointAssessment(type);
+	this.playSound = true;
+	this.assessment = new ArthritisJointAssessment(type, selected);
 	this.locations = initializeLocations(this.scale);
 
 	draw(this.canvas, this.assessment.joints, this.assessment.type, this.colors, this.locations, this.scale);
@@ -48,7 +48,7 @@ function ArthritisJointAssessmentCanvas(canvas, type, colors, scale) {
 			ctx.canvas.height = img.height * scale;
 	    	ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
 	    	joints.forEach(function(joint) {
-	    		drawArc(ctx, locations[joint.id].x, locations[joint.id].y, locations[joint.id].radius, colors.border, colors.unselected);
+	    		drawArc(ctx, locations[joint.id].x, locations[joint.id].y, locations[joint.id].radius, colors.border, joint.selected == 1 ? colors.selected : colors.unselected);
 	    	});
 	    	setJointCount(canvas, type, joints, scale);
 	  	};
@@ -125,6 +125,7 @@ function ArthritisJointAssessmentCanvas(canvas, type, colors, scale) {
 		      	}
 		      	setJointCount(canvas, type, joints, scale);
 		    });
+		    //alert(canvas.toDataURL());
 		});
 	}
 
@@ -254,7 +255,7 @@ function ArthritisJointAssessmentCanvas(canvas, type, colors, scale) {
 	 * @returns {string}
 	 */
 	function getImage() {
-		return('resources/images/man.png');
+		return('resources/images/man-transparent.png');
 	}
 }
 
@@ -263,12 +264,21 @@ function ArthritisJointAssessmentCanvas(canvas, type, colors, scale) {
  * @constructor
  * @param {string} type - The assessment type.
  */
-function ArthritisJointAssessment(type) {
+function ArthritisJointAssessment(type, selected) {
 	this.type = type;
-	this.joints = initializeJoints(this.type);
+	this.joints = initializeJoints(this.type, selected);
 
-	function initializeJoints(type) {
+	function initializeJoints(type, selected) {
 		joints = joints();
+
+		//set selected joints
+		if(selected && selected != "") {
+			var s = selected.split(';');
+			for (var i = 0; i < s.length; i++) {
+				var idx = s[i] - 1;
+				joints[idx].selected = 1;
+			}
+		}
 
 		if(type=="sjc") {
 			joints = joints.filter(function(joint) { return ! joint.name.match(/hip/) });
@@ -358,16 +368,23 @@ function ArthritisJointAssessment(type) {
 /*
  * @returns {array}
  */
-function initialize() {
+function initialize(selectedJoints) {
   	var canvases = document.getElementsByTagName("canvas");
   	var jc = document.getElementsByClassName("jc");
   	var assessments = [];
+
   	for (var i = 0; i < jc.length; i++) {     
   		var type = 'sjc';
   		if(jc[i].classList.contains('tjc')) {
   			type = 'tjc';
   		}
- 		assessments.push(new ArthritisJointAssessmentCanvas(jc[i], type, { border:'green', selected:'green', unselected:'white'}, 0.5));
+
+  		if(selectedJoints && selectedJoints.hasOwnProperty(type)) {
+ 			assessments.push(new ArthritisJointAssessmentCanvas(jc[i], type, { border:'green', selected:'green', unselected:'white'}, 0.5, selectedJoints[type]));
+ 		}
+ 		else {
+ 			assessments.push(new ArthritisJointAssessmentCanvas(jc[i], type, { border:'green', selected:'green', unselected:'white'}, 0.5));
+ 		}
   	}
   	return(assessments);
 }
