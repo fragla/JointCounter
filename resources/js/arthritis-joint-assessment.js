@@ -103,9 +103,9 @@ function ArthritisJointAssessmentCanvas(canvas, type, colors, scale, selected) {
 	 * @param {boolean} playSound
 	 */
 	function addJointSelectionListenerToCanvas(canvas, joints, colors, locations, playSound) {
+		var playlist = [new Audio('resources/audio/ouch.mp3'), new Audio('resources/audio/getoff.mp3')];
 		canvas.addEventListener("click", function(e){
 			var ctx = canvas.getContext('2d');
-		    var audio = document.getElementById(["ouch", "getoff"][Math.floor(Math.random() * 2)]);
 		    const pos = {
 		    	x: e.pageX-canvas.offsetLeft,
 		      	y: e.pageY-canvas.offsetTop
@@ -116,7 +116,7 @@ function ArthritisJointAssessmentCanvas(canvas, type, colors, scale, selected) {
 		          		drawArc(ctx, locations[joint.id].x, locations[joint.id].y, locations[joint.id].radius, colors.border, colors.selected);
 		          		joint.selected=1;
 		          		if(playSound && Math.floor(Math.random() * 5) % 5 == 0) {
-		            		audio.play();
+		            		playlist[Math.floor(Math.random() * 2)].play();
 		          		}
 		        	} else {
 		          		drawArc(ctx, locations[joint.id].x, locations[joint.id].y, locations[joint.id].radius, colors.border, colors.unselected);
