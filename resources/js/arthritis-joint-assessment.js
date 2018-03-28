@@ -5,6 +5,7 @@
  * @param {string} type - The assessment type.
  * @param {object} colors - The colors for the joints. border, selected and unselected colors required.
  * @param {number} scale - Scale of the canvas in relation to the original image.
+ * @param {string} selected - Semi-colon delimited string of joint identifers to be selected.
  */
 function ArthritisJointAssessmentCanvas(canvas, type, colors, scale, selected) {
 	this.canvas = canvas;
@@ -132,6 +133,7 @@ function ArthritisJointAssessmentCanvas(canvas, type, colors, scale, selected) {
 	/*
 	 * @params {object} canvas
 	 * @params {array} joints
+ 	 * @params {object} coord
 	 * @params {number} scale
 	 * @params {object} locations
 	 */
@@ -160,6 +162,7 @@ function ArthritisJointAssessmentCanvas(canvas, type, colors, scale, selected) {
 	/*
 	 * @params {object} canvas
 	 * @params {string} message
+	 * @params {object} coord
 	 * @params {number} scale
 	 */
 	function writeMessage(canvas, message, coord, scale) {
@@ -263,6 +266,7 @@ function ArthritisJointAssessmentCanvas(canvas, type, colors, scale, selected) {
  * Represents a joint assessment 
  * @constructor
  * @param {string} type - The assessment type.
+ * @param {string} selected - Semi-colon delimited string of joint IDs.
  */
 function ArthritisJointAssessment(type, selected) {
 	this.type = type;
@@ -366,6 +370,7 @@ function ArthritisJointAssessment(type, selected) {
 }
 
 /*
+ * @param {string} selectedJoints - Semi-colon delimited string of joint IDs.
  * @returns {array}
  */
 function initialize(selectedJoints) {
